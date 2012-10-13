@@ -95,8 +95,15 @@ EOT
         foreach ($paths as $path) {
             if (is_dir($path)) {
                 $loader->loadFromDirectory($path);
+            } elseif (is_readable($path)) {
+                $loader->loadFromFile($path);
+            } else {
+                throw new InvalidArgumentException(
+                    sprintf('Directory or file does not exist or is not readable: %s', "\n\n- ".$path)
+                );
             }
         }
+
         $fixtures = $loader->getFixtures();
         if (!$fixtures) {
             throw new InvalidArgumentException(
